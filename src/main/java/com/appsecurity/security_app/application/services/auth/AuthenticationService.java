@@ -13,7 +13,7 @@ import com.appsecurity.security_app.domain.dto.RegisterUser;
 import com.appsecurity.security_app.domain.dto.UserDto;
 import com.appsecurity.security_app.domain.dto.auth.AuthenticationRequest;
 import com.appsecurity.security_app.domain.dto.auth.AuthenticationResponse;
-import com.appsecurity.security_app.domain.entities.User;
+import com.appsecurity.security_app.domain.entities.security.User;
 import com.appsecurity.security_app.infrastructure.utils.exceptions.ObjectNotFoundException;
 
 @Service
@@ -35,7 +35,7 @@ public class AuthenticationService {
         userDto.setId(user.getId());
         userDto.setName(user.getName());
         userDto.setUsername(user.getUsername());
-        userDto.setRole(user.getRole().name());
+        userDto.setRole(user.getRole().getName());
 
         String jwt = jwtService.generateToken(user, generateExtraClaims(user));
         userDto.setJwt(jwt);
@@ -45,7 +45,7 @@ public class AuthenticationService {
     private Map<String, Object> generateExtraClaims(User user) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("name",user.getName());
-        extraClaims.put("role",user.getRole().name());
+        extraClaims.put("role",user.getRole().getName());
         extraClaims.put("authorities",user.getAuthorities());
 
         return extraClaims;

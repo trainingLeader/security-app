@@ -7,11 +7,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.appsecurity.security_app.application.services.IRoleService;
 import com.appsecurity.security_app.application.services.IUserService;
 import com.appsecurity.security_app.domain.dto.UserDto;
-import com.appsecurity.security_app.domain.entities.User;
-import com.appsecurity.security_app.infrastructure.utils.enums.Role;
+import com.appsecurity.security_app.domain.entities.security.Role;
+import com.appsecurity.security_app.domain.entities.security.User;
 import com.appsecurity.security_app.infrastructure.utils.exceptions.InvalidPasswordException;
+import com.appsecurity.security_app.infrastructure.utils.exceptions.ObjectNotFoundException;
 
 @Service
 public class UserImpl implements IUserService {
@@ -22,6 +24,9 @@ public class UserImpl implements IUserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private IRoleService roleService;
+
     @Override
     public User registrOneCustomer(UserDto newUser) {
         validatePassword(newUser);
@@ -30,7 +35,9 @@ public class UserImpl implements IUserService {
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setUsername(newUser.getUsername());
         user.setName(newUser.getName());
-        user.setRole(Role.CUSTOMER);
+        Role defaultRole = roleService.findDefaultRole()
+                        .orElseThrow(() -> new ObjectNotFoundException("Role not found. Default Role"));
+        user.setRole(defaultRole);
 
         return userRepository.save(user);
     }

@@ -11,7 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.appsecurity.security_app.application.services.IUserService;
 import com.appsecurity.security_app.application.services.auth.JwtService;
-import com.appsecurity.security_app.domain.entities.User;
+import com.appsecurity.security_app.domain.entities.security.User;
 import com.appsecurity.security_app.infrastructure.utils.exceptions.ObjectNotFoundException;
 
 import org.springframework.util.StringUtils;
