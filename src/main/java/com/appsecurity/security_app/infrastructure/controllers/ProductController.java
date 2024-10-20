@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import jakarta.validation.Valid;
 public class ProductController {
     @Autowired
     private IProductService productService;
+    @PreAuthorize("hasRole('ADMINISTRATOR','ASSISTANT_ADMINISTRATOR')")
     @GetMapping
     public ResponseEntity<Page<Product>> findAll(Pageable pageable){
 
@@ -56,6 +58,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_ONE_PRODUCT')")
     @PutMapping("/{productId}")
     public ResponseEntity<Product> updateOneById(@PathVariable Long productId ,
                                                  @RequestBody @Valid ProductDto saveProduct){
@@ -63,6 +66,7 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
+    @PreAuthorize("hasAuthority('DISABLE_ONE_PRODUCT')")
     @PutMapping("/{productId}/disabled")
     public ResponseEntity<Product> disableOneById(@PathVariable Long productId){
         Product product = productService.disableOneById(productId);
